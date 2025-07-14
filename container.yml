@@ -1,0 +1,21 @@
+version: "3.3"
+services:
+   central:
+      image: mupif
+      build:
+         context: .
+         dockerfile: Dockerfile
+         args:
+            MUPIF_VPN_NAME: mp-test
+            MUPIF_BRANCH: master
+#      cap_add: # for wireguard
+#      - NET_ADMIN
+      volumes:
+      - ./persistent:/var/lib/mupif/persistent
+      ports:
+      - 51821:51821
+      - 5555:5555
+      - 8005:8005
+      - 8006:8006
+      - 10000:10000
+      - 80:80

@@ -1,0 +1,25 @@
+# inspired by https://gist.github.com/mosquito/b23e1c1e5723a7fd9e6568e5cf91180f
+# this file should go to /etc/systemd/system/docker-compose@.service
+[Unit]
+Description=%i MuPIF infrastructure
+Requires=docker.service
+After=docker.service
+
+[Service]
+# Type=oneshot
+Type=simple
+RemainAfterExit=False
+Restart=always
+RestartSec=3
+WorkingDirectory=/root/mupif-networks/%i
+ExecStart=/usr/bin/docker-compose -f container.yml up --build --remove-orphans --no-color
+# ExecStart=/usr/local/bin/podman-compose -f container.yml --podman-run-args="--replace=true" up --build --remove-orphans
+
+# ExecStop=/usr/bin/docker-compose -f container.yml down
+# StandardOutput=journal+console
+# StandardError=journal+console
+
+[Install]
+WantedBy=multi-user.target
+
+
