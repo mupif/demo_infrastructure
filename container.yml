@@ -1,21 +1,27 @@
 version: "3.3"
 services:
    central:
-      image: mupif
+      image: mupif/demo_infrastructure:latest
       build:
          context: .
          dockerfile: Dockerfile
          args:
             MUPIF_VPN_NAME: mp-test
             MUPIF_BRANCH: master
+            ENV_MUPIF_NS_PORT: 10000
+            ENV_INADDR_ANY: 127.0.0.1
 #      cap_add: # for wireguard
 #      - NET_ADMIN
-      volumes:
-      - ./persistent:/var/lib/mupif/persistent
+#      volumes:
+#      - mydata:/var/lib/mupif/persistent
+#      - ./persistent:/var/lib/mupif/persistent
       ports:
-      - 51821:51821
-      - 5555:5555
-      - 8005:8005
-      - 8006:8006
-      - 10000:10000
+#      - 51821:51821
+#      - 5555:5555
+#      - 8005:8005
+#      - 8006:8006
+#      - 10000:10000
+#      - 27017:27017
       - 80:80
+#volumes:
+#   mydata:

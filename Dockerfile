@@ -65,9 +65,8 @@ RUN git clone --branch master https://github.com/mupif/mupif-openvpn-monitor.git
 RUN pip3 install --upgrade -r ${MUPIF_MONITOR_OLD_DIR}/requirements.txt
 RUN git clone --branch master https://github.com/mupif/mupif-monitor.git ${MUPIF_MONITOR_DIR}
 #RUN #cd ${MUPIF_MONITOR_DIR}; npm install; MUPIF_API_URL="https://${MUPIF_VPN_NAME}.mupif.org/safe-api" npx quasar build
-RUN cd ${MUPIF_MONITOR_DIR}; npm install; MUPIF_API_URL="http://127.0.0.1:800/safe-api" npx quasar build
+RUN cd ${MUPIF_MONITOR_DIR}; npm install; MUPIF_API_URL="http://127.0.0.1/safe-api" npx quasar build
 #
-RUN sleep 1
 # clone mupif and mupifDB
 RUN git clone --branch ${MUPIF_BRANCH} https://github.com/mupif/mupif.git ${MUPIF_GIT_DIR}
 RUN git clone --branch ${MUPIFDB_BRANCH} https://github.com/mupif/MupifDB.git ${MUPIF_DB_DIR}
@@ -88,7 +87,7 @@ COPY supervisor-mupifdb-${MUPIFDB_BRANCH}.conf /etc/supervisor/conf.d/mupifdb.co
 # make MUPIF_VPN_NAME available to supervisor
 ENV MUPIF_VPN_NAME=$MUPIF_VPN_NAME
 ENV MUPIF_PERSISTENT=${MUPIF_HOME_DIR}/persistent
-CMD ["/usr/bin/supervisord"]
+CMD ["sh", "-c", "mkdir -p /var/lib/mupif/persistent/logs && chmod -R 777 /var/lib/mupif/persistent && /usr/bin/supervisord"]
 # allow to run wireguard config from the unprivileged monitor via sudo
 # the file under /etc/sudoers.d must NOT contain ., otherwise is ignored (!!) (https://superuser.com/a/869145/121677)
 ADD etc/10-wireguard-show /etc/sudoers.d/
@@ -106,3 +105,4 @@ COPY web_ui_config.json ${MUPIF_PERSIST_DIR}/web_ui_config.json
 ##
 ## fix permissions before serving the files through apache
 RUN chown mupif: -R ${MUPIF_MONITOR_DIR}/dist
+EXPOSE 80
